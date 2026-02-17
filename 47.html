@@ -2,6 +2,25 @@
 <html>
 <head>
   <link rel="stylesheet" type="text/css" href="css/flipbook.min.css">
+  <script>
+    // --- FLIPBOOK OFFLINE ACTIVATION PATCH ---
+    (function() {
+        const originalFetch = window.fetch;
+        window.fetch = function(url, options) {
+            // Intercept license checks
+            if (url && typeof url === 'string' && url.includes('check.php')) {
+                console.log("FlipBook License Check blocked by Offline Patch.");
+                // Return a fake "Success" response to the book
+                return Promise.resolve({
+                    ok: true,
+                    status: 200,
+                    json: async () => ({ success: true, active: true })
+                });
+            }
+            return originalFetch.apply(this, arguments);
+        };
+    })();
+</script>
   <script src="js/flipbook.min.js"></script>
   <script type="text/javascript">
     document.addEventListener("DOMContentLoaded", function () {
